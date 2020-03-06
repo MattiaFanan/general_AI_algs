@@ -34,8 +34,22 @@ class TestAlg(TestCase):
         assert array_equiv(expected2, ai_algs.local_binary_pattern(param_matrix2)), "not equal lbp2"
 
     def test_amino_acid_composition(self):
-        amino = "LNQAVSVAQARENFSRVEQA"
-        expected = [4 / 20, 2 / 20, 2 / 20, 0, 0, 0, 2 / 20, 3 / 20, 0, 0,
-                    1 / 20, 0, 0, 1 / 20, 0, 2 / 20, 0, 0, 0, 3 / 20]
-        result = ai_algs.amino_acid_composition(amino)
+        protein = "LNQAVSVAQARENFSRVEQA"
+        expected_count = [4, 2, 2, 0, 0, 0, 2, 3, 0, 0,
+                          1, 0, 0, 1, 0, 2, 0, 0, 0, 3]
+        expected = [elem / len(protein) for elem in expected_count]
+        result = ai_algs.amino_acid_composition(protein)
+        assert array_equiv(expected, result), "not equals amino"
+
+    def test_2_gram(self):
+        protein = "ARNAR"
+        expected = zeros(20 ** 2, dtype=float)
+        # two AN
+        expected[1 + 20 * 0] = 2 / len(protein)
+        # RN
+        expected[2 + 20 * 1] = 1 / len(protein)
+        # NA
+        expected[0 + 20 * 2] = 1 / len(protein)
+
+        result = ai_algs.two_gram(protein)
         assert array_equiv(expected, result), "not equals amino"

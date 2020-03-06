@@ -2,14 +2,15 @@ from numpy import *
 
 _lbp_operator = array([1, 2, 4, 128, 0, 8, 64, 32, 16]).reshape(3, 3)
 _amino_dict = {amino: pos for pos, amino in enumerate("ARNDCGEQHILKMFPSTWYV")}
+_aac_feature_vector_size = 20
 
 
 def local_binary_pattern(pattern) -> ndarray:
-    pattern_vector = zeros(2 ** 8, dtype=int)
+    feature_vector = zeros(2 ** 8, dtype=int)
     for row in range(1, pattern.shape[0] - 1):
         for column in range(1, pattern.shape[1] - 1):
-            pattern_vector[_apply_lbp_operator(pattern, row, column)] += 1
-    return pattern_vector
+            feature_vector[_apply_lbp_operator(pattern, row, column)] += 1
+    return feature_vector
 
 
 def _apply_lbp_operator(pattern, center_row, center_col) -> int:
@@ -27,9 +28,22 @@ def _s_function(first_term, second_term):
     return first_term >= second_term
 
 
-def amino_acid_composition(protein):
-    feature_vector = zeros(len(protein))
+def amino_acid_composition(protein) -> list:
+    feature_vector = zeros(_aac_feature_vector_size)
     for base in protein:
         feature_vector[_amino_dict[base]] += 1
 
-    return [amino_count/len(protein) for amino_count in feature_vector]
+    return [amino_count / len(protein) for amino_count in feature_vector]
+
+
+def two_gram(protein) -> list:
+    feature_vector = zeros(_aac_feature_vector_size ** 2)
+
+    for first_amino in range(0, len(protein) - 1):
+        col = protein[first_amino + 1]
+        row = protein[first_amino]
+        # rows are chained
+        di_amino_index = _amino_dict[col] + _aac_feature_vector_size * _amino_dict[row]
+        feature_vector[di_amino_index] += 1
+
+    return [amino_count / len(protein) for amino_count in feature_vector]
