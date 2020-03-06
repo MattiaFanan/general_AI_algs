@@ -30,5 +30,12 @@ class TestAlg(TestCase):
             [9, 14, 7, 9, 2]
         ])
 
-        assert array_equiv(expected1, ai_algs.local_binary_pattern(param_matrix1)), "not equal1"
-        assert array_equiv(expected2, ai_algs.local_binary_pattern(param_matrix2)), "not equal2"
+        assert array_equiv(expected1, ai_algs.local_binary_pattern(param_matrix1)), "not equal lbp1"
+        assert array_equiv(expected2, ai_algs.local_binary_pattern(param_matrix2)), "not equal lbp2"
+
+    def test_amino_acid_composition(self):
+        amino = "LNQAVSVAQARENFSRVEQA"
+        expected = [4 / 20, 2 / 20, 2 / 20, 0, 0, 0, 2 / 20, 3 / 20, 0, 0,
+                    1 / 20, 0, 0, 1 / 20, 0, 2 / 20, 0, 0, 0, 3 / 20]
+        result = ai_algs.amino_acid_composition(amino)
+        assert array_equiv(expected, result), "not equals amino"
